@@ -3,11 +3,11 @@ from datetime import datetime, timedelta
 
 
 def get_orders_in_range(start_date, end_date):
-    url = '#'  # your url
+    url = ''  # your url
 
     # WooCommerce API credentials
-    consumer_key = '#' your api key
-    consumer_secret = '#' your api key
+    consumer_key = '' #your api key
+    consumer_secret = '' #your api key
 
     per_page = 100  # Adjust as needed based on your requirements
 
