@@ -3,11 +3,11 @@ from datetime import datetime, timedelta
 
 
 def get_orders_in_range(start_date, end_date):
-    url = 'https://www.ecosh.ee/wp-json/wc/v3/orders'
+    url = '#'  # your url
 
     # WooCommerce API credentials
-    consumer_key = 'ck_65fce5028b5d0487659fc17259d8a6f15d481d47'
-    consumer_secret = 'cs_1b0b829d272b92565fd0c67423f1716854e120dc'
+    consumer_key = '#' your api key
+    consumer_secret = '#' your api key
 
     per_page = 100  # Adjust as needed based on your requirements
 
