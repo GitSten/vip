@@ -1,0 +1,262 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIP TELLIMUSED</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-top: 40px;
+        }
+
+        h2 {
+            margin-top: 20px;
+        }
+
+        .container {
+            margin-top: 20px;
+        }
+
+        .table th, .table td {
+            text-align: center;
+        }
+
+        .order-status-processing {
+            color: #007bff;  /* Blue color for 'processing' status */
+        }
+
+        .order-status-completed {
+            color: #28a745;  /* Green color for 'completed' status */
+        }
+
+        .order-status-default {
+            color: #333;  /* Default color for other statuses */
+        }
+
+
+          .empty-table {
+            display: none;
+        }
+
+        .empty-message {
+            display: none;
+        }
+
+        .empty-amount {
+            display: none;
+        }
+
+        .box-container {
+            border: 2px solid #ccc; /* Border color */
+            padding: 10px;
+            border-radius: 5px; /* Optional: Add some border radius for rounded corners */
+            margin-top: 10px; /* Optional: Add some margin for spacing */
+        }
+
+
+                .btn-primary {
+            color: #fff;
+            background-color: #28a745;
+            border-color: #007bff;
+        }
+
+
+        .btn-primary:hover {
+            background-color: #276b62;
+
+
+        }
+
+
+        .cta-button{ border: 2px solid #ccc; /* Border color */
+            padding: 10px;
+            border-radius: 5px; /* Optional: Add some border radius for rounded corners */
+            margin-top: 10px; /* Optional: Add some margin for spacing */
+                color: #fff;
+                     background-color: #28a745;
+
+
+        }
+
+
+                .product-cell {
+            /* Additional styles for the cell if needed */
+        }
+
+        .product-image {
+            max-width: 180px;
+            max-height: 120px;
+        }
+
+
+
+
+
+
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <img src="{% static 'ecosh3.png' %}" alt="Logo">
+        <h1>VIP klientide tellimused</h1>
+
+        {% for customer_data in orders_by_customer %}
+            <h2>{{ customer_data.customer_name }}</h2>
+            <table class="table table-bordered {% if not customer_data.customer_orders %}empty-table{% endif %}">
+                <thead>
+            <tr>
+                <th>Nimi</th>
+                <th>Tellimuse ID</th>
+                <th>Kuupäev</th>
+                <th>Ostusumma</th>
+                <th>Tellimuse olek</th>
+                <th>Merch staatus</th>
+                <th> 🎁</th>
+                <th>Tegevus</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in customer_data.customer_orders %}
+                <tr>
+                    <td>{{ customer_data.customer_name }}</td>
+                    <td>{{ order.order_id }}</td>
+                    <td>{{ order.order_date }}</td>
+                    <td>{{ order.total_amount | floatformat:2 }} €</td>
+                    <td class="{% if order.order_status == 'processing' %}order-status-processing{% elif order.order_status == 'completed' %}order-status-completed{% else %}order-status-default{% endif %}">
+                        {{ order.order_status }}
+                    </td>
+                    <td>
+                        <form method="post" action="{% url 'update_gift' order.order_id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="gift" value="{% if order.gift %}on{% endif %}">
+                            <div type="submit" class="btn btn-sm {% if order.gift %}btn-success{% else %}btn-danger{% endif %}">
+                                {% if order.gift %}On kingi saanud{% else %} - {% endif %}
+                            </div>
+                        </form>
+                    </td>
+                    <td class="product-cell">
+                        {{ order.product.name }} <br>
+                        <img src="{{ order.product.image.url }}" alt="{{ order.product.name }}" class="product-image">
+                        <br> Lisainfo: {{ order.comment }}
+                    </td>
+                    <td>
+                        <a href="{% url 'update_gift' order.order_id %}" class="btn btn-primary btn-sm">Muuda merch staatust / Vali kink</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+            <p class="empty-message {% if customer_data.customer_orders %}empty-amount{% endif %}">
+                {% if not customer_data.customer_orders %}No orders available.{% endif %}
+            </p>
+
+            <p class="empty-amount {% if customer_data.total_amount_sum %}empty-message{% endif %}">
+                {% if not customer_data.total_amount_sum %}Total Amount: {{ customer_data.total_amount_sum | floatformat:2 }}{% endif %}
+            </p>
+
+            <div class="box-container">
+                <p>Kõik tellimused kokku: {{ customer_data.total_amount_sum | floatformat:2 }} €</p>
+            </div>
+        {% endfor %}
+    </div>
+
+     <!-- Pagination links -->
+        <div class="pagination">
+            <span class="step-links">
+                {% if orders_by_customer.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ orders_by_customer.previous_page_number }}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ orders_by_customer.number }} of {{ orders_by_customer.paginator.num_pages }}.
+                </span>
+
+                {% if orders_by_customer.has_next %}
+                    <a href="?page={{ orders_by_customer.next_page_number }}">next</a>
+                    <a href="?page={{ orders_by_customer.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+
+
+    <p>
+           <a href="{% url 'sync_orders' %}" id="sync-orders-link" class="cta-button">Sünkrooni tellimused uuesti</a> <br> <hr>
+          <button onclick="confirmUpdateOrderStatuses()">Muuda kõikide tellimuste oleks täidetuks</button>
+        </p>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+
+<script>
+    document.getElementById('sync-orders-link').addEventListener('click', function (event) {
+        event.preventDefault();
+
+        var password = prompt('Sisesta parool:');
+
+        // Replace 'your_password_here' with the actual password you want to use
+        if (password === '1234') {
+            // Redirect to the sync_orders URL if the password is correct
+            window.location.href = this.href;
+        } else {
+            alert('Vale parool. Tellimuste sünkroonimine tühistatud.');
+        }
+    });
+
+
+   function updateOrderStatuses() {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '{% url "update_order_statuses" %}', true);
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        var response = JSON.parse(xhr.responseText);
+                        alert(response.message);  // Show a message indicating the update status
+                    } else {
+                        alert('Failed to update order statuses.');
+                    }
+                }
+            };
+
+            xhr.send();
+        }
+
+        // Function to confirm the update before triggering it
+        function confirmUpdateOrderStatuses() {
+            var confirmation = confirm('Kas oled kindel, et tahad muuta tellimuste olekut?');
+
+            if (confirmation) {
+                updateOrderStatuses();
+            } else {
+                alert('Tühistatud!');
+            }
+        }
+</script>
+
+
+
+
+</body>
+
+</html>

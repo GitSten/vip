@@ -1,0 +1,92 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECOSH VIP</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        p {
+            color: #666;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 20px;
+            background-color: #157D55;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .cta-button:hover {
+            background-color: #4F2D7F;
+        }
+         h1 {
+            color: #157D55; /* Green color */
+            margin-top: 40px;
+        }
+
+    </style>
+</head>
+<br>
+<br>
+<br>
+<br>
+
+
+<body>
+    <div class="container">
+           <img src="{% static 'ecosh3.png' %}" alt="Logo">
+        <h1>ECOSH VIP</h1>
+
+
+        <p>
+            <a href="{% url 'view_orders' %}"  class="cta-button">Vaata  Tellimusi</a>
+        </p>
+        <a href="{% url 'sync_orders' %}" id="sync-orders-link" class="cta-button">Sünkrooni tellimused</a>
+    </div>
+</body>
+
+</html>
+
+
+<script>
+    document.getElementById('sync-orders-link').addEventListener('click', function (event) {
+        event.preventDefault();
+
+        var password = prompt('Sisesta parool:');
+
+        // Replace 'your_password_here' with the actual password you want to use
+        if (password === '1234') {
+            // Redirect to the sync_orders URL if the password is correct
+            window.location.href = this.href;
+        } else {
+            alert('Vale parool. Tellimuste sünkroonimine tühistatud.');
+        }
+    });
+</script>
