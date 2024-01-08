@@ -187,12 +187,12 @@ def view_orders(request):
             # Add the customer name to the set
             unique_customer_names.add(order.customer_name)
 
-    # Filter out orders where the total amount is less than 300
+    # Filtreerib tellimused, mille kogusumma on alla 300
     orders_by_customer = [customer_data for customer_data in orders_by_customer if
                           customer_data['total_amount_sum'] and customer_data[
                               'total_amount_sum'] >= 300]
 
-    # Pagination code
+    # Lehekülje kood
     paginator = Paginator(orders_by_customer, 50)  # Set the number of orders per page
     page = request.GET.get('page')
 
@@ -205,7 +205,7 @@ def view_orders(request):
 
     return render(request, 'view_orders.html', {'orders_by_customer': orders})
 
-
+# merch
 @login_required()
 def update_gift(request, order_id):
     order = get_object_or_404(Order, order_id=order_id)
@@ -224,10 +224,10 @@ def update_gift(request, order_id):
 
 
 def update_order_statuses(request):
-    # Update the status of existing processing orders to completed
+   # Värskendage olemasolevate töötlemistellimuste olekut lõpetatuks
     Order.objects.filter(order_status='processing').update(order_status='completed')
 
-    return JsonResponse({'message': 'Order statuses updated successfully.'})
+    return JsonResponse({'message': 'Tellimuste olekute värskendamine õnnestus.'})
 
 
 def index(request):
