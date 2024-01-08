@@ -191,7 +191,7 @@ def view_orders(request):
                               'total_amount_sum'] >= 300]
 
     # Lehekülje kood
-    paginator = Paginator(orders_by_customer, 50)  # Set the number of orders per page
+    paginator = Paginator(orders_by_customer, 50)  # Tellimuste arv lehel
     page = request.GET.get('page')
 
     try:
@@ -217,12 +217,12 @@ def update_gift(request, order_id):
     else:
         form = OrderForm(instance=order)
 
-    products = Product.objects.all()  # Retrieve all products
+    products = Product.objects.all()  # Hanngi kõik tooted
     return render(request, 'update_gift.html', {'form': form, 'order': order, 'products': products})
 
 
 def update_order_statuses(request):
-   # Värskendage olemasolevate töötlemistellimuste olekut lõpetatuks
+   # Värskenda olemasolevate töötlemistellimuste olekut lõpetatuks
     Order.objects.filter(order_status='processing').update(order_status='completed')
 
     return JsonResponse({'message': 'Tellimuste olekute värskendamine õnnestus.'})
