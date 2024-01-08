@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 def send_total_amount_sum_notification(customer_name, total_amount_sum, order_id):
     recipient_emails = settings.NOTIFICATION_EMAILS
     subject = 'UUS VIP KLIENDI TELLIMUS!'
-    view_orders_link = 'http://127.0.0.1:8000/view-orders/'
+    view_orders_link = 'https://www.ecoshvip.eu/'
 
     # Check if notification has already been sent
     customer_orders = Order.objects.filter(
